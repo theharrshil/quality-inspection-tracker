@@ -1,6 +1,7 @@
+import { createServer as createHttpServer } from "node:http";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { serve } from "@hono/node-server";
+import { getRequestListener, serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import app from "./app";
 import { runMigrations } from "./db/migrate";
@@ -12,9 +13,16 @@ import { env } from "./lib/env";
 runMigrations();
 await seedIfEmpty();
 
-// Paths owned by the server itself — never handed to the client fallback/proxy.
+// Paths owned by the server itself — never handed to the client fallback/Vite.
 function isServerPath(path: string): boolean {
   return path.startsWith("/api") || path === "/doc" || path === "/reference";
+}
+
+function banner(port: number): void {
+  const base = `http://localhost:${port}`;
+  console.log(`🚀 Quality Inspection Tracker running on ${base}`);
+  console.log(`   • App        ${base}`);
+  console.log(`   • API docs   ${base}/reference`);
 }
 
 if (env.isProd) {
@@ -31,45 +39,55 @@ if (env.isProd) {
     if (isServerPath(c.req.path)) return c.notFound();
     return c.html(indexHtml);
   });
+
+  serve({ fetch: app.fetch, port: env.PORT }, (info) => banner(info.port));
 } else {
-  // Development: also single-port. This server proxies every non-API request to the
-  // Vite dev server, so the whole app (UI + API + docs) is reachable on one port.
-  // Vite's HMR websocket connects straight to :5173 (server.hmr.clientPort in
-  // vite.config.ts), so it doesn't need proxying here.
-  const viteOrigin = process.env.VITE_DEV_ORIGIN ?? "http://localhost:5173";
+  // Development: embed the Vite dev server in this process via middleware mode, so
+  // the whole app (UI + HMR + API + docs) runs on ONE port with a single command —
+  // no separate Vite port. Vite is a devDependency imported dynamically here, so it
+  // is never pulled into the production path.
+  const { createServer: createViteServer } = await import("vite");
 
-  app.all("*", async (c) => {
-    if (isServerPath(c.req.path)) return c.notFound();
-    const url = new URL(c.req.url);
-    const target = `${viteOrigin}${url.pathname}${url.search}`;
-    try {
-      const upstream = await fetch(target, {
-        method: c.req.method,
-        headers: c.req.raw.headers,
-        body:
-          c.req.method === "GET" || c.req.method === "HEAD"
-            ? undefined
-            : await c.req.raw.arrayBuffer(),
-        redirect: "manual",
-      });
-      // fetch already decompressed the body; drop headers that would mislead the
-      // browser into decoding it again.
-      const headers = new Headers(upstream.headers);
-      headers.delete("content-encoding");
-      headers.delete("content-length");
-      return new Response(upstream.body, { status: upstream.status, headers });
-    } catch {
-      return c.html(
-        "<h1>Starting the dev server…</h1><p>Vite is warming up — refresh in a moment.</p>",
-        503,
-      );
-    }
+  const honoListener = getRequestListener(app.fetch);
+  const httpServer = createHttpServer();
+
+  const vite = await createViteServer({
+    configFile: resolve(process.cwd(), "vite.config.ts"),
+    // middlewareMode lets us drive Vite from our own HTTP server; attaching HMR to
+    // that server means the websocket lives on the same port too.
+    server: { middlewareMode: true, hmr: { server: httpServer } },
+    appType: "custom",
   });
-}
 
-serve({ fetch: app.fetch, port: env.PORT }, (info) => {
-  const base = `http://localhost:${info.port}`;
-  console.log(`🚀 Quality Inspection Tracker running on ${base}`);
-  console.log(`   • App        ${base}${env.isProd ? "" : "  (single port — open this)"}`);
-  console.log(`   • API docs   ${base}/reference`);
-});
+  const clientIndex = resolve(process.cwd(), "src/client/index.html");
+
+  httpServer.on("request", (req, res) => {
+    const path = (req.url ?? "/").split("?")[0] ?? "/";
+
+    // API, doc, and reference are handled by Hono; everything else by Vite.
+    if (isServerPath(path)) {
+      honoListener(req, res);
+      return;
+    }
+
+    vite.middlewares(req, res, async () => {
+      // Vite didn't serve an asset/module → return the transformed index.html so
+      // client-side routing works (with HMR wired in).
+      try {
+        const template = await vite.transformIndexHtml(
+          req.url ?? "/",
+          readFileSync(clientIndex, "utf8"),
+        );
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "text/html");
+        res.end(template);
+      } catch (err) {
+        vite.ssrFixStacktrace(err as Error);
+        res.statusCode = 500;
+        res.end(err instanceof Error ? err.stack : String(err));
+      }
+    });
+  });
+
+  httpServer.listen(env.PORT, () => banner(env.PORT));
+}

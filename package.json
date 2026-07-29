@@ -7,9 +7,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "dev": "concurrently -k -n server,client -c blue,green \"npm:dev:server\" \"npm:dev:client\"",
-    "dev:server": "tsx watch src/server/index.ts",
-    "dev:client": "vite",
+    "dev": "tsx watch src/server/index.ts",
     "build": "vite build",
     "start": "cross-env NODE_ENV=production tsx src/server/index.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.server.json --noEmit",
@@ -41,7 +39,6 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^5.0.0",
-    "concurrently": "^9.1.0",
     "cross-env": "^7.0.3",
     "drizzle-kit": "^0.31.10",
     "tailwindcss": "^4.0.0",

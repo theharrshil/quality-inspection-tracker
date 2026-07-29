@@ -59,16 +59,14 @@ npm install
 
 # Option A — dev with hot reload. Open http://localhost:3000.
 npm run dev
-# The Hono server (3000) proxies the client from Vite; HMR still works.
 
 # Option B — single-process production build. Open http://localhost:3000.
 npm run build && npm start
 ```
 
-> Under the hood, `npm run dev` also starts Vite on :5173 (for module transforms and
-> HMR), but you only ever open **http://localhost:3000** — the server proxies
-> non-API requests to Vite, and HMR connects back to :5173 directly. You may open
-> :5173 instead if you prefer; it proxies `/api` to the server.
+> `npm run dev` runs a single process on **http://localhost:3000**: the Hono server
+> embeds the Vite dev server in middleware mode, so the UI, HMR, API, and docs all
+> share one port — there is no separate client port.
 
 No `.env` is required — the app boots with safe defaults and generates an ephemeral
 `JWT_SECRET` (with a warning) if one isn't set. See `.env.example` for every knob.
@@ -93,10 +91,10 @@ the lock, paste an access token from `POST /api/auth/login`, and try any endpoin
 
 **Single-process Hono + SPA, one port everywhere.** In production, Hono serves the
 built React assets *and* `/api` on one port, with an SPA fallback for client routes
-and JSON 404s for unknown API paths. In dev it stays single-port too: Hono proxies
-non-API requests to the Vite dev server (HMR intact), so you always open
-`http://localhost:3000`. One thing to run, nothing to orchestrate — the surest way
-to protect a clean clone-and-run.
+and JSON 404s for unknown API paths. In dev it stays single-port too: the Hono
+server embeds Vite in middleware mode (HMR on the same port), so `npm run dev` is one
+process on `http://localhost:3000`. One thing to run, nothing to orchestrate — the
+surest way to protect a clean clone-and-run.
 
 **SQLite + Drizzle ORM.** No database server to provision; the file lives in
 `data/` (a Docker volume in the container). Drizzle gives typed queries and
