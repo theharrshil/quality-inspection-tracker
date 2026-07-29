@@ -1,7 +1,7 @@
 # Single-process image: builds the React client and runs Hono (serving the SPA +
-# API) via tsx. Debian slim gives better-sqlite3 a prebuilt binary, with build
-# tools present as a fallback.
-FROM node:24-bookworm-slim
+# API) via tsx. Debian trixie's glibc (2.41) satisfies better-sqlite3's published
+# prebuilt binary, so no native compile is needed; build tools stay as a fallback.
+FROM node:24-trixie-slim
 
 WORKDIR /app
 
