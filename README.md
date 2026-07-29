@@ -51,19 +51,24 @@ realistic inspections, and serves the SPA + API on one port. Well under 5 minute
 
 ### Local (npm)
 
-Requires Node 20+ (developed on Node 24).
+Requires Node 20+ (developed on Node 24). **Everything runs on one port — 3000 —
+in both dev and production.**
 
 ```bash
 npm install
 
-# Option A — dev (Vite + API with hot reload; Vite proxies /api to the server)
+# Option A — dev with hot reload. Open http://localhost:3000.
 npm run dev
-# client: http://localhost:5173   ·   API + docs: http://localhost:3000
+# The Hono server (3000) proxies the client from Vite; HMR still works.
 
-# Option B — single-process production build
+# Option B — single-process production build. Open http://localhost:3000.
 npm run build && npm start
-# everything on http://localhost:3000
 ```
+
+> Under the hood, `npm run dev` also starts Vite on :5173 (for module transforms and
+> HMR), but you only ever open **http://localhost:3000** — the server proxies
+> non-API requests to Vite, and HMR connects back to :5173 directly. You may open
+> :5173 instead if you prefer; it proxies `/api` to the server.
 
 No `.env` is required — the app boots with safe defaults and generates an ephemeral
 `JWT_SECRET` (with a warning) if one isn't set. See `.env.example` for every knob.
@@ -75,7 +80,7 @@ the lock, paste an access token from `POST /api/auth/login`, and try any endpoin
 
 | Script | Purpose |
 |---|---|
-| `npm run dev` | Vite client + API server together (hot reload) |
+| `npm run dev` | Single-port dev on :3000 (Hono proxies the Vite client, hot reload) |
 | `npm run build` | Build the client bundle to `dist/client` |
 | `npm start` | Serve SPA + API on one port (production) |
 | `npm test` | Vitest API tests (in-memory SQLite) |
@@ -86,11 +91,12 @@ the lock, paste an access token from `POST /api/auth/login`, and try any endpoin
 
 ## Architecture & decisions
 
-**Single-process Hono + SPA.** In production, Hono serves the built React assets
-*and* `/api` on one port, with an SPA fallback for client routes and JSON 404s for
-unknown API paths. In dev, Vite serves the client and proxies `/api`. One thing to
-run, nothing to orchestrate — which is the surest way to protect a clean
-clone-and-run.
+**Single-process Hono + SPA, one port everywhere.** In production, Hono serves the
+built React assets *and* `/api` on one port, with an SPA fallback for client routes
+and JSON 404s for unknown API paths. In dev it stays single-port too: Hono proxies
+non-API requests to the Vite dev server (HMR intact), so you always open
+`http://localhost:3000`. One thing to run, nothing to orchestrate — the surest way
+to protect a clean clone-and-run.
 
 **SQLite + Drizzle ORM.** No database server to provision; the file lives in
 `data/` (a Docker volume in the container). Drizzle gives typed queries and

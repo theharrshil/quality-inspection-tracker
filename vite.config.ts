@@ -15,7 +15,12 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
+    // Fixed port so the Hono dev server can reliably proxy to it (single-port dev).
     port: 5173,
+    strictPort: true,
+    // The page is served via Hono on :3000, but HMR connects straight back to Vite.
+    hmr: { clientPort: 5173 },
+    // Also allow opening Vite directly on :5173, which proxies /api to Hono.
     proxy: {
       "/api": "http://localhost:3000",
     },
