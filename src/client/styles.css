@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #e2e8f0;
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  font-family:
+    system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Respect the iOS safe area at the bottom (home indicator) for the tab bar. */
+.pb-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px));
+}
