@@ -2,11 +2,14 @@ import { randomBytes } from "node:crypto";
 
 // Load .env if present, but don't require it — the app must boot with safe defaults
 // so a reviewer can clone-and-run with zero configuration. process.loadEnvFile()
-// throws if the file is missing, hence the try/catch.
-try {
-  process.loadEnvFile();
-} catch {
-  // No .env file — rely on the real environment plus the defaults below.
+// throws if the file is missing, hence the try/catch. Skipped under test so a
+// developer's local .env can't leak into the deterministic test environment.
+if (process.env.NODE_ENV !== "test") {
+  try {
+    process.loadEnvFile();
+  } catch {
+    // No .env file — rely on the real environment plus the defaults below.
+  }
 }
 
 function num(value: string | undefined, fallback: number): number {
