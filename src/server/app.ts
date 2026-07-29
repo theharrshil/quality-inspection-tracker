@@ -4,6 +4,7 @@ import health from "./routers/health";
 import auth from "./routers/auth/auth.index";
 import inspections from "./routers/inspections/inspections.index";
 import summary from "./routers/summary/summary.index";
+import sap from "./routers/sap/sap.index";
 
 const app = createApp();
 
@@ -15,7 +16,8 @@ const routes = app
   .route("/api", health)
   .route("/api/auth", auth)
   .route("/api/inspections", inspections)
-  .route("/api/summary", summary);
+  .route("/api/summary", summary)
+  .route("/api/sap", sap);
 
 export type AppType = typeof routes;
 export default app;

@@ -11,6 +11,13 @@ export default function configureOpenAPI(app: AppOpenAPI) {
     bearerFormat: "JWT",
   });
 
+  // The mock SAP webhook is guarded by a shared secret header rather than a JWT.
+  app.openAPIRegistry.registerComponent("securitySchemes", "WebhookSecret", {
+    type: "apiKey",
+    in: "header",
+    name: "x-webhook-secret",
+  });
+
   app.doc("/doc", {
     openapi: "3.0.0",
     info: {
