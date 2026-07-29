@@ -47,7 +47,7 @@ export function LogInspection() {
       return;
     }
     try {
-      const row = await create.mutateAsync({
+      const result = await create.mutateAsync({
         id: crypto.randomUUID(), // client-generated for offline idempotency
         inspectionDate,
         machineLineId: machineLineId.trim(),
@@ -55,7 +55,9 @@ export function LogInspection() {
         severity,
         remarks: remarks.trim() ? remarks.trim() : null,
       });
-      navigate(`/inspections/${row.id}`);
+      // Queued offline → show it in the list (with a pending marker); otherwise
+      // jump straight to the saved record.
+      navigate(result.queued ? "/" : `/inspections/${result.inspection.id}`);
     } catch (err) {
       setSubmitError(
         err instanceof ApiError ? err.message : "Could not save. Try again.",

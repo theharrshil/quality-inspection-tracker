@@ -3,6 +3,7 @@ import type { DefectType } from "@shared/enums";
 import { defectTypeLabels } from "@shared/labels";
 import { ApiError } from "../lib/api";
 import { useInspection, useResolveInspection } from "../lib/queries";
+import { useOffline } from "../lib/useOffline";
 import { useRouter } from "../lib/router";
 import { formatDate, formatDateTime } from "../lib/format";
 import { SeverityBadge, SourceTag, StatusPill } from "../components/badges";
@@ -29,6 +30,7 @@ export function InspectionDetail({ id }: { id: string }) {
   const { back } = useRouter();
   const query = useInspection(id);
   const resolve = useResolveInspection(id);
+  const { pendingResolveIds } = useOffline();
 
   const [note, setNote] = useState("");
   const [showError, setShowError] = useState(false);
@@ -42,7 +44,10 @@ export function InspectionDetail({ id }: { id: string }) {
       return;
     }
     try {
-      await resolve.mutateAsync(note.trim());
+      const res = await resolve.mutateAsync(note.trim());
+      // Queued offline → the server still shows it open; go back to the list where
+      // the pending resolution is reflected.
+      if (res.queued) back();
     } catch (err) {
       setSubmitError(
         err instanceof ApiError ? err.message : "Could not resolve. Try again.",
@@ -122,6 +127,16 @@ export function InspectionDetail({ id }: { id: string }) {
                 Resolved {formatDateTime(item.resolvedAt)}
               </p>
             )}
+          </div>
+        ) : pendingResolveIds.has(item.id) ? (
+          <div className="rounded-2xl border border-orange-200 bg-orange-50 p-4">
+            <h3 className="mb-1 text-sm font-semibold text-orange-800">
+              Resolution pending sync
+            </h3>
+            <p className="text-sm text-orange-900">
+              This resolution was recorded offline and will be submitted when you
+              reconnect.
+            </p>
           </div>
         ) : (
           <form

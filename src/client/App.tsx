@@ -1,6 +1,7 @@
 import { useAuth } from "./lib/auth";
 import { useRouter } from "./lib/router";
 import { BottomNav } from "./components/BottomNav";
+import { OfflineSync } from "./components/OfflineSync";
 import { LoadingState } from "./components/ui";
 import { Login } from "./pages/Login";
 import { InspectionsList } from "./pages/InspectionsList";
@@ -34,6 +35,7 @@ export default function App() {
 
   return (
     <div className="mx-auto flex min-h-full max-w-[430px] flex-col bg-slate-50 shadow-sm">
+      <OfflineSync />
       <main className="flex-1 pb-24">
         <Screen path={path} />
       </main>

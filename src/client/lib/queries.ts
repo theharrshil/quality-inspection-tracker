@@ -10,6 +10,7 @@ import type {
   Summary,
 } from "@validators";
 import { apiFetch } from "./api";
+import { submitCreate, submitResolve } from "./offline";
 
 export type ListFilters = Record<string, string>;
 
@@ -59,14 +60,12 @@ function useInvalidateInspections() {
   };
 }
 
+// Create/resolve route through the offline layer: online-first, queued on a
+// network failure. Real validation errors (422) still reject the mutation.
 export function useCreateInspection() {
   const invalidate = useInvalidateInspections();
   return useMutation({
-    mutationFn: (input: CreateInspection) =>
-      apiFetch<Inspection>("/inspections", {
-        method: "POST",
-        body: JSON.stringify(input),
-      }),
+    mutationFn: (input: CreateInspection) => submitCreate(input),
     onSuccess: invalidate,
   });
 }
@@ -75,13 +74,9 @@ export function useResolveInspection(id: string) {
   const qc = useQueryClient();
   const invalidate = useInvalidateInspections();
   return useMutation({
-    mutationFn: (resolutionNote: string) =>
-      apiFetch<Inspection>(`/inspections/${id}/resolve`, {
-        method: "PATCH",
-        body: JSON.stringify({ resolutionNote }),
-      }),
-    onSuccess: (row) => {
-      qc.setQueryData(queryKeys.inspection(id), row);
+    mutationFn: (resolutionNote: string) => submitResolve(id, resolutionNote),
+    onSuccess: (res) => {
+      if (res.inspection) qc.setQueryData(queryKeys.inspection(id), res.inspection);
       invalidate();
     },
   });
