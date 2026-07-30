@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { AlertTriangleIcon, InboxIcon } from "./icons";
 
 // Sticky screen header — a full-width bar spanning the content pane. Title is
 // centered on mobile and left-aligned on desktop. Tap targets are ≥44px.
@@ -97,7 +98,7 @@ export function EmptyState({
 }) {
   return (
     <CenterState>
-      <div className="text-4xl">🧵</div>
+      <InboxIcon className="h-10 w-10 text-slate-300" />
       <p className="text-base font-medium text-slate-700">{title}</p>
       {hint && <p className="max-w-xs text-sm text-slate-500">{hint}</p>}
       {action}
@@ -114,7 +115,7 @@ export function ErrorState({
 }) {
   return (
     <CenterState>
-      <div className="text-4xl">⚠️</div>
+      <AlertTriangleIcon className="h-10 w-10 text-amber-400" />
       <p className="text-base font-medium text-slate-700">Something went wrong</p>
       <p className="max-w-xs text-sm text-slate-500">{message}</p>
       {onRetry && (

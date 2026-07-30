@@ -1,4 +1,6 @@
+import type { ReactNode } from "react";
 import { useRouter } from "../lib/router";
+import { ChartIcon, ClipboardIcon, PlusIcon } from "./icons";
 
 // Persistent bottom tab bar with a raised "+ Log" action in the middle — the
 // supervisor's most frequent task is always one thumb-tap away.
@@ -13,7 +15,7 @@ export function BottomNav() {
       <div className="grid grid-cols-3 items-center">
         <TabButton
           label="Inspections"
-          icon="📋"
+          icon={<ClipboardIcon className="h-6 w-6" />}
           active={isList}
           onClick={() => navigate("/")}
         />
@@ -21,15 +23,15 @@ export function BottomNav() {
           <button
             type="button"
             onClick={() => navigate("/log")}
-            className="-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-600 text-2xl font-light text-white shadow-lg shadow-indigo-600/30 transition active:scale-95"
+            className="-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 transition active:scale-95"
             aria-label="Log a new inspection"
           >
-            +
+            <PlusIcon className="h-6 w-6" />
           </button>
         </div>
         <TabButton
           label="Summary"
-          icon="📊"
+          icon={<ChartIcon className="h-6 w-6" />}
           active={isSummary}
           onClick={() => navigate("/summary")}
         />
@@ -45,7 +47,7 @@ function TabButton({
   onClick,
 }: {
   label: string;
-  icon: string;
+  icon: ReactNode;
   active: boolean;
   onClick: () => void;
 }) {
@@ -57,9 +59,7 @@ function TabButton({
         active ? "text-indigo-600" : "text-slate-400"
       }`}
     >
-      <span className="text-lg" aria-hidden>
-        {icon}
-      </span>
+      {icon}
       {label}
     </button>
   );

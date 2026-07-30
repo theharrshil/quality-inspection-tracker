@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { ApiError } from "../lib/api";
 import { useAuth } from "../lib/auth";
 import { Button, Field } from "../components/ui";
+import { BadgeCheckIcon } from "../components/icons";
 
 const inputClass =
   "min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-base text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20";
@@ -33,8 +34,8 @@ export function Login() {
     <div className="flex min-h-full flex-col items-center justify-center px-6">
       <div className="w-full max-w-[430px] md:max-w-sm md:rounded-2xl md:border md:border-slate-200 md:bg-white md:p-8 md:shadow-sm">
         <div className="mb-8 text-center">
-        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 text-3xl shadow-lg shadow-indigo-600/30">
-          🧵
+        <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 shadow-lg shadow-indigo-600/30">
+          <BadgeCheckIcon className="h-7 w-7 text-white" />
         </div>
         <h1 className="text-xl font-bold text-slate-900">
           Quality Inspection Tracker
