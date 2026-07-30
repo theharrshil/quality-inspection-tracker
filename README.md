@@ -39,11 +39,17 @@ password: inspect123
 ### Docker (one command)
 
 ```bash
-docker compose up --build
+docker compose up --build        # or: npm run docker:up
 ```
 
 Then open **http://localhost:3000**. First boot applies migrations, seeds ~20
 realistic inspections, and serves the SPA + API on one port. Well under 5 minutes.
+
+The `--build` flag rebuilds the image from the current source, so the container
+always reflects the latest code — re-run it after any change (`npm run docker:up`
+does this and runs detached; `npm run docker:down` stops it). The SQLite database
+lives in the `qit-data` volume and survives restarts; add `-v` to `docker compose
+down` to reset it.
 
 ### Local (npm)
 
