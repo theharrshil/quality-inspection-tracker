@@ -1,6 +1,8 @@
+import type { ReactNode } from "react";
 import { useAuth } from "../lib/auth";
 import { useOffline } from "../lib/useOffline";
 import { useRouter } from "../lib/router";
+import { BadgeCheckIcon, ChartIcon, ClipboardIcon, PlusIcon } from "./icons";
 
 // Desktop-only left rail (hidden below md). Mirrors the mobile BottomNav's
 // destinations, plus branding, the signed-in user, and sign-out.
@@ -14,8 +16,8 @@ export function SideNav() {
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-slate-200 bg-white p-4 md:flex">
       <div className="mb-6 flex items-center gap-2 px-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-lg shadow-sm shadow-indigo-600/30">
-          🧵
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 shadow-sm shadow-indigo-600/30">
+          <BadgeCheckIcon className="h-5 w-5 text-white" />
         </div>
         <div className="leading-tight">
           <div className="text-sm font-bold text-slate-900">Quality Inspection</div>
@@ -24,9 +26,24 @@ export function SideNav() {
       </div>
 
       <nav className="flex flex-col gap-1">
-        <NavItem icon="📋" label="Inspections" active={isList} onClick={() => navigate("/")} />
-        <NavItem icon="＋" label="Log inspection" active={path === "/log"} onClick={() => navigate("/log")} />
-        <NavItem icon="📊" label="Summary" active={path === "/summary"} onClick={() => navigate("/summary")} />
+        <NavItem
+          icon={<ClipboardIcon className="h-5 w-5" />}
+          label="Inspections"
+          active={isList}
+          onClick={() => navigate("/")}
+        />
+        <NavItem
+          icon={<PlusIcon className="h-5 w-5" />}
+          label="Log inspection"
+          active={path === "/log"}
+          onClick={() => navigate("/log")}
+        />
+        <NavItem
+          icon={<ChartIcon className="h-5 w-5" />}
+          label="Summary"
+          active={path === "/summary"}
+          onClick={() => navigate("/summary")}
+        />
       </nav>
 
       <div className="mt-auto flex flex-col gap-3 border-t border-slate-100 pt-4">
@@ -63,7 +80,7 @@ function NavItem({
   active,
   onClick,
 }: {
-  icon: string;
+  icon: ReactNode;
   label: string;
   active: boolean;
   onClick: () => void;
@@ -78,9 +95,7 @@ function NavItem({
           : "text-slate-600 hover:bg-slate-100"
       }`}
     >
-      <span className="text-lg" aria-hidden>
-        {icon}
-      </span>
+      {icon}
       {label}
     </button>
   );
