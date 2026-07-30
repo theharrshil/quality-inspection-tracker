@@ -1,6 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-// Sticky screen header. Tap targets (back button) are ≥44px.
+// Sticky screen header — a full-width bar spanning the content pane. Title is
+// centered on mobile and left-aligned on desktop. Tap targets are ≥44px.
 export function PageHeader({
   title,
   left,
@@ -11,11 +12,31 @@ export function PageHeader({
   right?: ReactNode;
 }) {
   return (
-    <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b border-slate-200 bg-white/90 px-3 backdrop-blur">
-      <div className="flex min-w-11 items-center">{left}</div>
-      <h1 className="truncate text-base font-semibold text-slate-900">{title}</h1>
-      <div className="flex min-w-11 items-center justify-end">{right}</div>
+    <header className="sticky top-0 z-10 flex h-14 items-center justify-between gap-2 border-b border-slate-200 bg-white/90 px-4 backdrop-blur md:h-16 md:px-8">
+      <div className="flex min-w-11 items-center md:min-w-0">{left}</div>
+      <h1 className="truncate text-base font-semibold text-slate-900 md:flex-1 md:text-left md:text-lg">
+        {title}
+      </h1>
+      <div className="flex min-w-11 items-center justify-end md:min-w-0">{right}</div>
     </header>
+  );
+}
+
+// Constrains and pads the scrollable content below a PageHeader. The header stays
+// full-width; only the content is width-limited.
+export function PageBody({
+  max = "max-w-5xl",
+  className = "",
+  children,
+}: {
+  max?: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className={`mx-auto w-full ${max} px-3 py-4 md:px-8 md:py-6 ${className}`}>
+      {children}
+    </div>
   );
 }
 

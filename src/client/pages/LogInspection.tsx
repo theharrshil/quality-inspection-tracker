@@ -80,7 +80,7 @@ export function LogInspection() {
         }
       />
 
-      <form onSubmit={onSubmit} className="flex flex-col gap-5 p-4">
+      <form onSubmit={onSubmit} className="mx-auto flex w-full max-w-2xl flex-col gap-5 px-3 py-4 md:px-8 md:py-6">
         <Field
           label="Inspection date"
           htmlFor="date"

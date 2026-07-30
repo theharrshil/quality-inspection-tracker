@@ -5,29 +5,25 @@ A mobile-first web app a fabric-plant shop-floor supervisor uses on their phone 
 register. One TypeScript codebase: a Hono API that documents itself, a React SPA
 served from the same process, SQLite for storage.
 
-> Designed for a phone. Everything below works at **390px**; open your browser
-> dev-tools device toolbar at that width to review it as intended.
+> **Mobile-first, responsive to desktop.** The base layout targets a phone (verified
+> at 390px); at `md`+ it becomes a two-pane app — a persistent sidebar and a
+> multi-column content area — without changing the mobile experience.
 
-```
-┌───────────────────────────┐   ┌───────────────────────────┐   ┌───────────────────────────┐
-│ Inspections      Sign out │   │ ‹ Back      Inspection    │   │ Summary                   │
-│ ─────────────────────────  │   │ ─────────────────────────  │   │ ─────────────────────────  │
-│ [All sev ▾] [All stat ▾]  │   │  Weave defect  [Critical] │   │  9      19      28         │
-│ [All type▾] [Newest ▾]   │   │  [Open] [SAP]             │   │  Open  Resolved Total     │
-│                           │   │  Machine/line   LOOM-14   │   │                           │
-│ ┌───────────────────────┐ │   │  Inspection date 29 Jul   │   │  [Critical]        8 total │
-│ │ Weave defect [Critical]│ │   │  Logged     29 Jul 14:04  │   │   ┌──────┐ ┌──────┐       │
-│ │ LOOM-14 • 29 Jul 2026 │ │   │                           │   │   │  3   │ │  5   │       │
-│ │ [Open]                │ │   │  ┌─ Mark as resolved ───┐ │   │   │ Open │ │Resolvd│      │
-│ └───────────────────────┘ │   │  │ Resolution note      │ │   │   └──────┘ └──────┘       │
-│ ┌───────────────────────┐ │   │  │ [__________________] │ │   │  [Major]          12 total │
-│ │ Shade variation [Major]│ │   │  │ [   Mark resolved  ] │ │   │   ...                     │
-│ │ RAPIER-03 • 29 Jul    │ │   │  └──────────────────────┘ │   │                           │
-│ └───────────────────────┘ │   │                           │   │                           │
-│      📋      (+)     📊     │   │                           │   │      📋      (+)     📊     │
-└───────────────────────────┘   └───────────────────────────┘   └───────────────────────────┘
-     Inspections list                 Detail / Resolve                     Summary
-```
+<table>
+  <tr>
+    <td width="34%"><img src="docs/mobile-inspections.png" alt="Inspections on mobile" /></td>
+    <td width="66%"><img src="docs/desktop-inspections.png" alt="Inspections on desktop" /></td>
+  </tr>
+  <tr>
+    <td align="center"><em>Mobile — bottom tab bar</em></td>
+    <td align="center"><em>Desktop — sidebar + card grid</em></td>
+  </tr>
+</table>
+
+<p>
+  <img src="docs/desktop-summary.png" alt="Summary on desktop" width="49%" />
+  <img src="docs/desktop-log.png" alt="Log inspection on desktop" width="49%" />
+</p>
 
 ---
 

@@ -3,7 +3,7 @@ import { severityLabels } from "@shared/labels";
 import { ApiError } from "../lib/api";
 import { useSummary } from "../lib/queries";
 import { severityStyles } from "../lib/format";
-import { ErrorState, LoadingState, PageHeader } from "../components/ui";
+import { ErrorState, LoadingState, PageBody, PageHeader } from "../components/ui";
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
@@ -33,14 +33,14 @@ export function Summary() {
           onRetry={() => void query.refetch()}
         />
       ) : (
-        <div className="flex flex-col gap-4 p-4">
+        <PageBody max="max-w-4xl" className="flex flex-col gap-4">
           <div className="grid grid-cols-3 gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <Stat label="Open" value={query.data.totals.open} />
             <Stat label="Resolved" value={query.data.totals.resolved} />
             <Stat label="Total" value={query.data.totals.total} />
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="grid gap-3 sm:grid-cols-3">
             {SEVERITIES.map((severity) => {
               const counts = query.data.bySeverity[severity];
               return (
@@ -80,7 +80,7 @@ export function Summary() {
               );
             })}
           </div>
-        </div>
+        </PageBody>
       )}
     </div>
   );

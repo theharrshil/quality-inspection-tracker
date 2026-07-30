@@ -1,6 +1,7 @@
 import { useAuth } from "./lib/auth";
 import { useRouter } from "./lib/router";
 import { BottomNav } from "./components/BottomNav";
+import { SideNav } from "./components/SideNav";
 import { OfflineSync } from "./components/OfflineSync";
 import { LoadingState } from "./components/ui";
 import { Login } from "./pages/Login";
@@ -33,10 +34,14 @@ export default function App() {
     return <Login />;
   }
 
+  // Mobile-first: content fills the full viewport width with a bottom tab bar. At md+
+  // it becomes a two-pane app — a persistent left sidebar and a content pane. Each
+  // screen's header spans the pane; only the body content is width-constrained.
   return (
-    <div className="mx-auto flex min-h-full max-w-[430px] flex-col bg-slate-50 shadow-sm">
+    <div className="min-h-full md:flex">
       <OfflineSync />
-      <main className="flex-1 pb-24">
+      <SideNav />
+      <main className="min-w-0 flex-1 pb-24 md:pb-0">
         <Screen path={path} />
       </main>
       <BottomNav />

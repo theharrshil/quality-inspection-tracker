@@ -36,8 +36,8 @@ export function FilterBar({
   ).length;
 
   return (
-    <div className="flex flex-col gap-2 border-b border-slate-200 bg-slate-50 p-3">
-      <div className="grid grid-cols-2 gap-2">
+    <div className="flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-3 md:p-4">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <select
           aria-label="Filter by severity"
           className={selectClass}

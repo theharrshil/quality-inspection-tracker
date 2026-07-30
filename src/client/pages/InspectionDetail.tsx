@@ -96,7 +96,7 @@ export function InspectionDetail({ id }: { id: string }) {
     <div className="flex flex-col">
       <PageHeader title="Inspection" left={backButton} />
 
-      <div className="flex flex-col gap-4 p-4">
+      <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-3 py-4 md:px-8 md:py-6">
         <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="mb-2 flex items-start justify-between gap-2">
             <h2 className="text-lg font-semibold text-slate-900">

@@ -30,8 +30,9 @@ export function Login() {
   }
 
   return (
-    <div className="mx-auto flex min-h-full max-w-[430px] flex-col justify-center bg-slate-50 px-6">
-      <div className="mb-8 text-center">
+    <div className="flex min-h-full flex-col items-center justify-center px-6">
+      <div className="w-full max-w-[430px] md:max-w-sm md:rounded-2xl md:border md:border-slate-200 md:bg-white md:p-8 md:shadow-sm">
+        <div className="mb-8 text-center">
         <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 text-3xl shadow-lg shadow-indigo-600/30">
           🧵
         </div>
@@ -75,9 +76,10 @@ export function Login() {
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-xs text-slate-400">
-        Demo credentials are pre-filled.
-      </p>
+        <p className="mt-6 text-center text-xs text-slate-400">
+          Demo credentials are pre-filled.
+        </p>
+      </div>
     </div>
   );
 }

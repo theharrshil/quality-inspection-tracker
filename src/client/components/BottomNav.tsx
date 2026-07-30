@@ -9,7 +9,7 @@ export function BottomNav() {
   const isSummary = path === "/summary";
 
   return (
-    <nav className="pb-safe fixed inset-x-0 bottom-0 z-20 mx-auto max-w-[430px] border-t border-slate-200 bg-white">
+    <nav className="pb-safe fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white md:hidden">
       <div className="grid grid-cols-3 items-center">
         <TabButton
           label="Inspections"
