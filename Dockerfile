@@ -15,6 +15,10 @@ RUN npm ci
 
 # Copy the source and build the client bundle into dist/client.
 COPY . .
+# Never ship a database inside the image — the container migrates + seeds a fresh
+# one on first boot (or restores it from the mounted volume). This guards against a
+# stray local data/*.sqlite in the build context.
+RUN rm -f data/*.sqlite data/*.sqlite-shm data/*.sqlite-wal
 RUN npm run build
 
 ENV NODE_ENV=production
