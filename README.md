@@ -11,7 +11,11 @@
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-self--documenting-6BA539?logo=openapiinitiative&logoColor=white)](#api-reference)
 [![Tests](https://img.shields.io/badge/tests-19_passing-3FB950)](#testing)
 
+[![Live demo](https://img.shields.io/badge/Live_demo-quality--inspection--tracker.fly.dev-8B5CF6?logo=flydotio&logoColor=white)](https://quality-inspection-tracker.fly.dev)
+
 One TypeScript codebase: a self-documenting Hono API, a React SPA served from the same process, and SQLite for storage. Runs on **one port** with **one command** — `docker compose up`.
+
+**🔗 Live demo:** **[quality-inspection-tracker.fly.dev](https://quality-inspection-tracker.fly.dev)** — sign in with `supervisor` / `inspect123` (credentials are pre-filled).
 
 </div>
 
